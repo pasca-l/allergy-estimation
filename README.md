@@ -1,1 +1,1 @@
-# allergy-estimation-from-image
+# allergy-estimation
