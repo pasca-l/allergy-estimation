@@ -1,7 +1,6 @@
 import torch
 import torch.optim as optim
 import torch.nn.functional as nnf
-from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 
 
