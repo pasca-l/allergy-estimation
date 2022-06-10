@@ -12,7 +12,6 @@ class FoodDataModule(pl.LightningDataModule):
         super().__init__()
         self.data_dir = data_dir
         self.ann_dir = ann_dir
-        # transformer to fit requirement of pre-trained network
         self.trans = transforms.Compose([
             transforms.Resize(256),
             transforms.CenterCrop(224),
