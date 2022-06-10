@@ -16,9 +16,9 @@ class FoodDataModule(pl.LightningDataModule):
             transforms.Resize(256),
             transforms.CenterCrop(224),
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                 std=[0.229, 0.224, 0.225]),
-            transforms.ToPILImage(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]),
         ])
 
     def setup(self, stage=None):
@@ -39,16 +39,17 @@ class FoodDataModule(pl.LightningDataModule):
             self.predict_data = None
 
     def train_dataloader(self):
-        return DataLoader(self.train_data, batch_size=8, shuffle=True)
+        return DataLoader(self.train_data, batch_size=64, num_workers=4,
+                          shuffle=True)
 
     def val_dataloader(self):
-        return DataLoader(self.val_data, batch_size=8, shuffle=True)
+        return DataLoader(self.val_data, batch_size=64, num_workers=4)
 
     def test_dataloader(self):
-        return DataLoader(self.test_data, batch_size=8)
+        return DataLoader(self.test_data, batch_size=64)
 
     def predict_dataloader(self):
-        return DataLoader(self.predict_data, batch_size=8)
+        return DataLoader(self.predict_data, batch_size=64)
 
 
 class FoodDataset(Dataset):
@@ -70,4 +71,4 @@ class FoodDataset(Dataset):
 
         label = img_name.split('/')[0]
 
-        return np.array(transformed_img), label
+        return transformed_img, 0
