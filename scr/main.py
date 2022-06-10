@@ -6,12 +6,17 @@ from datasets import FoodDataModule
 
 
 def main():
-    dataset = FoodDataModule()
-    model = AllergyClassifierFinetuneModel()
-    classifier = AllergyClassifier(model)
+    # dataset = FoodDataModule(
+    #             data_dir='../food-101/images/',
+    #             ann_dir='../food-101/meta/')
+    # model = AllergyClassifierFinetuneModel()
+    # classifier = AllergyClassifier(model)
+    #
+    # trainer = pl.Trainer(max_epochs=1)
+    # trainer.fit(classifier, dataset)
 
-    trainer = pl.Trainer()
-    trainer.fit(classifier, dataset)
+    model = AllergyClassifierFinetuneModel()
+    print(model.parameters())
 
 
 if __name__ == '__main__':
