@@ -22,6 +22,6 @@ class AllergyClassifier(pl.LightningModule):
         self.log("val_loss", loss)
 
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.parameters(), lr=1e-3)
+        optimizer = optim.Adam(self.model.parameters(), lr=1e-3)
         lr_scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1)
         return [optimizer], [lr_scheduler]

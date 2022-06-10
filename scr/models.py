@@ -1,11 +1,9 @@
 import torch.nn as nn
-# https://pytorch.org/vision/stable/models.html
-import torchvision.models as models
 
 
-class AllergyClassifierFinetuneModel():
+class AllergyClassifierModel(nn.Module):
     def __init__(self):
-        self.model_arch = models.convnext_large(pretrained=True)
+        super().__init__()
 
     def forward(self, x):
-        return self.model_arch(x)
+        return self(x)
