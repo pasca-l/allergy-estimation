@@ -1,6 +1,6 @@
 import os
 import torch
-from torch.utils.data import Dataset, random_split
+from torch.utils.data import Dataset, DataLoader, random_split
 from torchvision import transforms
 import pytorch_lightning as pl
 import numpy as np
@@ -39,16 +39,16 @@ class FoodDataModule(pl.LightningDataModule):
             self.predict_data = None
 
     def train_dataloader(self):
-        return DataLoader(self.train_data, batchsize=8, shuffle=True)
+        return DataLoader(self.train_data, batch_size=8, shuffle=True)
 
     def val_dataloader(self):
-        return DataLoader(self.val_data, batchsize=8, shuffle=True)
+        return DataLoader(self.val_data, batch_size=8, shuffle=True)
 
     def test_dataloader(self):
-        return DataLoader(self.test_data, batchsize=8)
+        return DataLoader(self.test_data, batch_size=8)
 
     def predict_dataloader(self):
-        return DataLoader(self.predict_data, batchsize=8)
+        return DataLoader(self.predict_data, batch_size=8)
 
 
 class FoodDataset(Dataset):
