@@ -2,7 +2,7 @@ import pytorch_lightning as pl
 
 from models import AllergyClassifierModel
 from system import AllergyClassifier
-from datasets import FoodDataModule
+from datasets import FoodDataModule, FoodDataset
 
 
 def main():

@@ -71,4 +71,4 @@ class FoodDataset(Dataset):
 
         label = img_name.split('/')[0]
 
-        return transformed_img, 0
+        return transformed_img, label
