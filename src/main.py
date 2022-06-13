@@ -8,7 +8,8 @@ from datasets import FoodDataModule, FoodDataset
 def main():
     dataset = FoodDataModule(
                 data_dir='../food-101/images/',
-                ann_dir='../food-101/meta/')
+                ann_dir='../food-101/meta/',
+                class_file='../food-101/meta/classes.txt')
     model = AllergyClassifierModel()
     classifier = AllergyClassifier(model)
 

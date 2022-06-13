@@ -8,23 +8,17 @@ from PIL import Image
 
 
 class FoodDataModule(pl.LightningDataModule):
-    def __init__(self, data_dir='../data/images/', ann_dir='../data/meta/'):
+    def __init__(self, data_dir='../data/images/', ann_dir='../data/meta/',
+                 class_file='../data/meta/classes.txt'):
         super().__init__()
         self.data_dir = data_dir
         self.ann_dir = ann_dir
-        self.trans = transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(
-                mean=[0.485, 0.456, 0.406],
-                std=[0.229, 0.224, 0.225]),
-        ])
+        self.cls_file = class_file
 
     def setup(self, stage=None):
         if stage == "fit" or stage is None:
             full_dataset =\
-                FoodDataset(self.data_dir, self.ann_dir, 'train', self.trans)
+                FoodDataset(self.data_dir, self.ann_dir, self.cls_file, 'train')
             train_size = int(len(full_dataset) * 0.8)
             val_size = len(full_dataset) - train_size
 
@@ -33,7 +27,7 @@ class FoodDataModule(pl.LightningDataModule):
 
         if stage == "test" or stage is None:
             self.test_data =\
-                FoodDataset(self.data_dir, self.ann_dir, 'test', self.trans)
+                FoodDataset(self.data_dir, self.ann_dir, self.cls_file, 'test')
 
         if stage == "predict":
             self.predict_data = None
@@ -53,12 +47,19 @@ class FoodDataModule(pl.LightningDataModule):
 
 
 class FoodDataset(Dataset):
-    def __init__(self, data_dir, ann_dir, phase, trans):
+    def __init__(self, data_dir, ann_dir, class_file, phase):
         self.data_dir = data_dir
-        self.transform = trans
-
         ann_file = os.path.join(ann_dir, f"{phase}.txt")
         self.img_list = open(ann_file, 'r').read().splitlines()
+        self.class_list = open(class_file, 'r').read().splitlines()
+        self.transform = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]),
+        ])
 
     def __len__(self):
         return len(self.img_list)
@@ -69,6 +70,7 @@ class FoodDataset(Dataset):
         pil_img = Image.open(img_path).convert("RGB")
         transformed_img = self.transform(pil_img)
 
-        label = img_name.split('/')[0]
+        label_name = img_name.split('/')[0]
+        label = self.class_list.index(label_name)
 
         return transformed_img, label
