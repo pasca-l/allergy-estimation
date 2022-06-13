@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch.nn.functional as nnf
 # https://pytorch.org/vision/stable/models.html
 import torchvision.models as models
 
@@ -23,7 +24,7 @@ class AllergyClassifierModel(nn.Module):
 class LayerNorm2d(nn.LayerNorm):
     def forward(self, x):
         x = x.permute(0, 2, 3, 1)
-        x = F.layer_norm(
+        x = nnf.layer_norm(
                 x, self.normalized_shape, self.weight, self.bias, self.eps)
         x = x.permute(0, 3, 1, 2)
         return x
