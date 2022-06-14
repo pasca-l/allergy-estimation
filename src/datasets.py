@@ -9,16 +9,19 @@ from PIL import Image
 
 class FoodDataModule(pl.LightningDataModule):
     def __init__(self, data_dir='../data/images/', ann_dir='../data/meta/',
-                 class_file='../data/meta/classes.txt'):
+                 class_file='../data/meta/classes.txt', batch_size=1):
         super().__init__()
-        self.data_dir = data_dir
-        self.ann_dir = ann_dir
-        self.cls_file = class_file
+        self.path_dict = {
+            "data_dir": data_dir,
+            "ann_dir": ann_dir,
+            "cls_file": class_file
+        }
+        self.batch_size = batch_size
 
     def setup(self, stage=None):
         if stage == "fit" or stage is None:
             full_dataset =\
-                FoodDataset(self.data_dir, self.ann_dir, self.cls_file, 'train')
+                FoodDataset('train', **self.path_dict)
             train_size = int(len(full_dataset) * 0.8)
             val_size = len(full_dataset) - train_size
 
@@ -27,31 +30,49 @@ class FoodDataModule(pl.LightningDataModule):
 
         if stage == "test" or stage is None:
             self.test_data =\
-                FoodDataset(self.data_dir, self.ann_dir, self.cls_file, 'test')
+                FoodDataset('test', **self.path_dict)
 
         if stage == "predict":
             self.predict_data = None
 
     def train_dataloader(self):
-        return DataLoader(self.train_data, batch_size=64, num_workers=4,
-                          shuffle=True)
+        return DataLoader(
+            self.train_data,
+            batch_size=self.batch_size,
+            num_workers=4,
+            pin_memory=True,
+            shuffle=True
+        )
 
     def val_dataloader(self):
-        return DataLoader(self.val_data, batch_size=64, num_workers=4)
+        return DataLoader(
+            self.val_data,
+            batch_size=self.batch_size,
+            num_workers=4,
+            pin_memory=True
+        )
 
     def test_dataloader(self):
-        return DataLoader(self.test_data, batch_size=64)
+        return DataLoader(
+            self.test_data,
+            batch_size=self.batch_size,
+            pin_memory=True
+        )
 
     def predict_dataloader(self):
-        return DataLoader(self.predict_data, batch_size=64)
+        return DataLoader(
+            self.predict_data,
+            batch_size=self.batch_size,
+            pin_memory=True
+        )
 
 
 class FoodDataset(Dataset):
-    def __init__(self, data_dir, ann_dir, class_file, phase):
-        self.data_dir = data_dir
-        ann_file = os.path.join(ann_dir, f"{phase}.txt")
+    def __init__(self, phase, **path_dict):
+        self.data_dir = path_dict['data_dir']
+        ann_file = os.path.join(path_dict['ann_dir'], f"{phase}.txt")
         self.img_list = open(ann_file, 'r').read().splitlines()
-        self.class_list = open(class_file, 'r').read().splitlines()
+        self.class_list = open(path_dict['cls_file'], 'r').read().splitlines()
         self.transform = transforms.Compose([
             transforms.Resize(256),
             transforms.CenterCrop(224),

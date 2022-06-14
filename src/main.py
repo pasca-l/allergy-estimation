@@ -9,7 +9,8 @@ def main():
     dataset = FoodDataModule(
         data_dir='../food-101/images/',
         ann_dir='../food-101/meta/',
-        class_file='../food-101/meta/classes.txt'
+        class_file='../food-101/meta/classes.txt',
+        batch_size=16
     )
     model = AllergyClassifierModel()
     classifier = AllergyClassifier(model)
@@ -23,6 +24,9 @@ def main():
         save_top_k=1
     )
     trainer = pl.Trainer(
+        accelerator='auto',
+        devices='auto',
+        auto_select_gpus=True,
         max_epochs=1,
         logger=logger,
         callbacks=[checkpoint_callback]
