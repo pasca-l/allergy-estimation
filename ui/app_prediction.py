@@ -7,7 +7,7 @@ from src.datasets import FoodDataModule
 
 # from app_ui import hoge
 
-# temp and 
+# temp
 def hoge():
     img_path = "../img/sample_food.jpeg"
     img = cv2.imread(img_path)
@@ -15,10 +15,10 @@ def hoge():
 
 def prediction(img = None):
     dataset = FoodDataModule(
-        data_dir='../food-101/images/',
-        ann_dir='../food-101/meta/',
+        # data_dir='../food-101/images/',
+        # ann_dir='../food-101/meta/',
         class_file='../food-101/meta/classes.txt',
-        batch_size=16
+        batch_size=1
     )
     model = AllergyClassifierModel()
     classifier = AllergyClassifier(model)
@@ -28,7 +28,7 @@ def prediction(img = None):
     )
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         dirpath='../logs/',
-        save_weights_only=True,
+        # save_weights_only=True,
         save_top_k=1
     )
     trainer = pl.Trainer(
@@ -44,8 +44,10 @@ def prediction(img = None):
     if img == None:
         img = hoge()
     
-    output = trainer.predict(model = classifier, ckpt_path = ckpt, return_predictions = True)
+    output = trainer.predict(model=classifier, ckpt_path=ckpt, return_predictions=True)
+    # output consists of 101 numbers
     # I don't know how to input image
 
-    return output
-    # return possible_foods_dict possible_allergen_dict
+    possible_foods_dict = {output}  # temp
+    possible_allergen_dict = {output} # temp
+    return possible_foods_dict, possible_allergen_dict
