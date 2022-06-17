@@ -48,3 +48,4 @@ def prediction(img = None):
     # I don't know how to input image
 
     return output
+    # return possible_foods_dict possible_allergen_dict
