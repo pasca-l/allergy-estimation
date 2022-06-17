@@ -7,13 +7,13 @@ from src.datasets import FoodDataModule
 
 # from app_ui import hoge
 
-# temp
+# temp and 
 def hoge():
-    img_path = "img/sample_food.jpeg"
+    img_path = "../img/sample_food.jpeg"
     img = cv2.imread(img_path)
     return img
 
-def main():
+def prediction(img = None):
     dataset = FoodDataModule(
         data_dir='../food-101/images/',
         ann_dir='../food-101/meta/',
@@ -40,11 +40,11 @@ def main():
         callbacks=[checkpoint_callback]
     )
 
-    ckpt = "ckpt/epoch=0-step=1263.ckpt"
-    img = hoge()
+    ckpt = "../ckpt/epoch=0-step=1263.ckpt"
+    if img == None:
+        img = hoge()
     
-    trainer.predict(model = classifier, ckpt_path = ckpt, return_predictions = True)
+    output = trainer.predict(model = classifier, ckpt_path = ckpt, return_predictions = True)
     # I don't know how to input image
 
-if __name__ == "__main__":
-    main()
+    return output
