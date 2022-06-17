@@ -15,8 +15,8 @@ def hoge():
 
 def prediction(img = None):
     dataset = FoodDataModule(
-        # data_dir='../food-101/images/',
-        # ann_dir='../food-101/meta/',
+        data_dir='../food-101/images/',
+        ann_dir='../food-101/meta/',
         class_file='../food-101/meta/classes.txt',
         batch_size=1
     )
@@ -44,7 +44,8 @@ def prediction(img = None):
     if img == None:
         img = hoge()
     
-    output = trainer.predict(model=classifier, ckpt_path=ckpt, return_predictions=True)
+    output = trainer.predict(model=classifier, datamodule=dataset,\
+                             ckpt_path=ckpt, return_predictions=True)
     # output consists of 101 numbers
     # I don't know how to input image
 
