@@ -18,6 +18,7 @@ class AllergyClassifierModel(nn.Module):
     def forward(self, x):
         x = self.convnext(x)
         x = self.seq(x)
+        x = nnf.softmax(x, dim=1)
         return x
 
 
