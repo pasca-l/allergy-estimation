@@ -5,11 +5,14 @@ from system import AllergyClassifier
 
 
 def main():
-    model = AllergyClassifierModel()
+    model = AllergyClassifierModel(
+        weight_file='../food-101/meta/weights.csv'
+    )
     classifier = AllergyClassifier(model)
 
-    ckpt = torch.load("../logs/epoch=0-step=1263.ckpt")
+    ckpt = torch.load("../logs/epoch=0-step=1263-v1.ckpt")
     classifier.load_state_dict(ckpt['state_dict'])
+    classifier.eval()
 
     # データを入れる部分
     # --------------
@@ -25,12 +28,10 @@ def main():
     img, label = dataset.train_dataloader().__iter__().next()[0][0], dataset.train_dataloader().__iter__().next()[1][0]
     # ----------------
 
-    classifier.eval()
     with torch.no_grad():
         output = classifier(img.unsqueeze(0))
     print(output.argmax(), label)
     print(output)
-    return
 
 
 if __name__ == '__main__':

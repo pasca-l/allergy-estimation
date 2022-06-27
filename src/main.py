@@ -11,7 +11,7 @@ def main():
         ann_dir='../food-101/meta/',
         class_file='../food-101/meta/classes.txt',
         weight_file='../food-101/meta/weights.csv',
-        batch_size=1
+        batch_size=16
     )
     model = AllergyClassifierModel(
         weight_file='../food-101/meta/weights.csv'
