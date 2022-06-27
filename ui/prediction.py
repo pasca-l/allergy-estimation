@@ -18,13 +18,16 @@ def main():
         data_dir='../food-101/images/',
         ann_dir='../food-101/meta/',
         class_file='../food-101/meta/classes.txt',
+        weight_file='../data/meta/weights.csv',
         batch_size=16
     )
     dataset.setup()
     img, label = dataset.train_dataloader().__iter__().next()[0][0], dataset.train_dataloader().__iter__().next()[1][0]
     # ----------------
 
-    output = classifier.model(img.unsqueeze(0))
+    classifier.eval()
+    with torch.no_grad():
+        output = classifier(img.unsqueeze(0))
     print(output.argmax(), label)
     print(output)
     return
