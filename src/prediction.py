@@ -39,6 +39,7 @@ def main():
 
     with torch.no_grad():
         # output = classifier(img.unsqueeze(0))
+        # output_f = classifier(img.unsqueeze(0))
         output_a = classifier(img.unsqueeze(0))
     # print(output.argmax(), label)
     # print(output)
@@ -52,17 +53,21 @@ def main():
     # print(table_index)
 
     # output_f = classifier.model(img.unsqueeze(0))
-    output_f = np.random.rand(101)
-    output_a = np.random.rand(27)
+    # output_f = np.random.rand(101)
+    # output_a = np.random.rand(27)
 
 
     possible_foods_list = []
     possible_allergen_list = [] 
     n = 3
 
-    # if output is only food label
-    for value in (heapq.nlargest(n, output_f)):
-        possible_foods_list.append([list(output_f).index(value), table_index[list(output_f).index(value)] ,value])
+    # # if output is only food label
+    # for value in (heapq.nlargest(n, output_f)):
+    #     possible_foods_list.append([list(output_f).index(value), table_index[list(output_f).index(value)] ,value])
+
+    # if output is only allergen label
+    for value in (heapq.nlargest(n, output_a)):
+        possible_allergen_list.append([list(output_a).index(value), table_index[list(output_a).index(value)] ,value])
 
     # # if output is both food and allergen label
     # for value_f in (heapq.nlargest(n, output_f)):
