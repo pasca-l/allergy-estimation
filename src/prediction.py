@@ -29,7 +29,7 @@ def main():
         data_dir='../food-101/images/',
         ann_dir='../food-101/meta/',
         class_file='../food-101/meta/classes.txt',
-        weight_file='../data/meta/weights.csv',
+        weight_file='../food-101/meta/weights.csv',
         batch_size=16
     )
     dataset.setup()
