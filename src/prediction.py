@@ -6,6 +6,9 @@ import heapq
 from models import AllergyClassifierModel
 from system import AllergyClassifier
 
+def my_index_multi(l, x):
+    return [i for i, _x in enumerate(l) if _x == x]
+
 def hoge():
     import cv2 # not recommended
     img_path = "../img/sample_food.jpeg"
@@ -48,9 +51,9 @@ def main():
     table_path = "../food-101/meta/table.csv"
     # table_path = "../table.csv"
     table = pd.read_csv(table_path)
-    table_columun = list(table.columns)[1:]
+    table_column = list(table.columns)[1:]
     table_index = list(table["table"])
-    # print(table_index)
+    # print(table_columun)
 
     # output_f = classifier.model(img.unsqueeze(0))
     # output_f = np.random.rand(101)
@@ -67,15 +70,15 @@ def main():
 
     # # if output is only food label
     # for value in (heapq.nlargest(n, output_f)):
-    #     possible_foods_list.append([list(output_f).index(value), table_index[list(output_f).index(value)] ,value])
+    #     possible_foods_list.append([list(output_f).index(value), table_column[list(output_f).index(value)] ,value])
 
     # if output is only allergen label
     for value in (heapq.nlargest(n, output_a)):
-        possible_allergen_list.append([list(output_a).index(value), table_index[list(output_a).index(value)] ,value])
+        possible_allergen_list.append([list(output_a).index(value), table_column[list(output_a).index(value)] ,value])
 
     # # if output is both food and allergen label
     # for value_f in (heapq.nlargest(n, output_f)):
-    #     possible_foods_list.append([list(output_f).index(value_f), table_index[list(output_f).index(value_f)] ,value_f])
+    #     possible_foods_list.append([list(output_f).index(value_f), table_column[list(output_f).index(value_f)] ,value_f])
     # for value_a in (heapq.nlargest(n, output_a)):
     #     possible_allergen_list.append([list(output_a).index(value_a), table_columun[list(output_a).index(value_a)] ,value_a])
 
