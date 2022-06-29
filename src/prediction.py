@@ -6,7 +6,7 @@ import heapq
 from models import AllergyClassifierModel
 from system import AllergyClassifier
 
-def my_index_multi(l, x):
+def index_list(l, x):
     return [i for i, _x in enumerate(l) if _x == x]
 
 def hoge():
@@ -67,6 +67,7 @@ def main():
     possible_foods_list = []
     possible_allergen_list = [] 
     n = 3
+    temp = 0
 
     # # if output is only food label
     # for value in (heapq.nlargest(n, output_f)):
@@ -74,7 +75,13 @@ def main():
 
     # if output is only allergen label
     for value in (heapq.nlargest(n, output_a)):
-        possible_allergen_list.append([list(output_a).index(value), table_column[list(output_a).index(value)] ,value])
+        if value == temp:
+            break
+        else:
+            for ind in index_list(output_a, value):
+                # print(ind)
+                possible_allergen_list.append([ind, table_column[ind] ,value])
+        temp = value
 
     # # if output is both food and allergen label
     # for value_f in (heapq.nlargest(n, output_f)):
