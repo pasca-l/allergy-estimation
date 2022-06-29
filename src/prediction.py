@@ -66,7 +66,7 @@ def main():
     #     possible_foods_list.append([list(output_f).index(value), table_index[list(output_f).index(value)] ,value])
 
     # if output is only allergen label
-    for value in (heapq.nlargest(n, output_a)):
+    for value in (heapq.nlargest(n, output_a.tolist()[0])):
         possible_allergen_list.append([list(output_a).index(value), table_index[list(output_a).index(value)] ,value])
 
     # # if output is both food and allergen label
