@@ -20,7 +20,7 @@ def main():
         weight_file='../food-101/meta/weights.csv'
     )
     classifier = AllergyClassifier(model)
-
+    print("before")
     ckpt = torch.load("../logs/epoch=0-step=1263-v1.ckpt")
     classifier.load_state_dict(ckpt['state_dict'])
     classifier.eval()
