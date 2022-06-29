@@ -1,18 +1,26 @@
 import os
+import torch
 from torch.utils.data import Dataset, DataLoader, random_split
 from torchvision import transforms
 import pytorch_lightning as pl
+import numpy as np
 from PIL import Image
 
 
 class FoodDataModule(pl.LightningDataModule):
-    def __init__(self, data_dir='../data/images/', ann_dir='../data/meta/',
-                 class_file='../data/meta/classes.txt', batch_size=1):
+    def __init__(self,
+        data_dir='../data/images/',
+        ann_dir='../data/meta/',
+        class_file='../data/meta/classes.txt',
+        weight_file='../data/meta/weights.csv',
+        batch_size=1
+    ):
         super().__init__()
         self.path_dict = {
             "data_dir": data_dir,
             "ann_dir": ann_dir,
-            "cls_file": class_file
+            "cls_file": class_file,
+            "w_file": weight_file
         }
         self.batch_size = batch_size
 
@@ -57,13 +65,6 @@ class FoodDataModule(pl.LightningDataModule):
             pin_memory=True
         )
 
-    def predict_dataloader(self):
-        return DataLoader(
-            self.predict_data,
-            batch_size=self.batch_size,
-            pin_memory=True
-        )
-
 
 class FoodDataset(Dataset):
     def __init__(self, phase, **path_dict):
@@ -71,6 +72,8 @@ class FoodDataset(Dataset):
         ann_file = os.path.join(path_dict['ann_dir'], f"{phase}.txt")
         self.img_list = open(ann_file, 'r').read().splitlines()
         self.class_list = open(path_dict['cls_file'], 'r').read().splitlines()
+        self.weights = np.loadtxt(path_dict['w_file'], delimiter=',',       
+                        skiprows=1, usecols=range(1, 28), dtype='float32')
         self.transform = transforms.Compose([
             transforms.Resize(256),
             transforms.CenterCrop(224),
@@ -89,7 +92,11 @@ class FoodDataset(Dataset):
         pil_img = Image.open(img_path).convert("RGB")
         transformed_img = self.transform(pil_img)
 
-        label_name = img_name.split('/')[0]
-        label = self.class_list.index(label_name)
+        # class label (class #)
+        class_name = img_name.split('/')[0]
+        class_num = self.class_list.index(class_name)
+
+        # allergy label (list of allergy percentage)
+        label = self.weights[class_num]
 
         return transformed_img, label
