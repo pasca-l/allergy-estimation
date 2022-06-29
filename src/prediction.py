@@ -55,6 +55,10 @@ def main():
     # output_f = classifier.model(img.unsqueeze(0))
     # output_f = np.random.rand(101)
     # output_a = np.random.rand(27)
+    output_a = output_a.tolist()[0]
+    # output_f = output_f.tolist()
+    print(output_a)
+
 
 
     possible_foods_list = []
@@ -66,7 +70,7 @@ def main():
     #     possible_foods_list.append([list(output_f).index(value), table_index[list(output_f).index(value)] ,value])
 
     # if output is only allergen label
-    for value in (heapq.nlargest(n, output_a.tolist()[0])):
+    for value in (heapq.nlargest(n, output_a)):
         possible_allergen_list.append([list(output_a).index(value), table_index[list(output_a).index(value)] ,value])
 
     # # if output is both food and allergen label
@@ -75,7 +79,7 @@ def main():
     # for value_a in (heapq.nlargest(n, output_a)):
     #     possible_allergen_list.append([list(output_a).index(value_a), table_columun[list(output_a).index(value_a)] ,value_a])
 
-    print(possible_foods_list)
+    # print(possible_foods_list)
     print(possible_allergen_list)
     
     return
