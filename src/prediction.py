@@ -58,8 +58,9 @@ class Predictor():
             temp = value        
         return possible_list
 
+
     def predict(self, img):
-        img = self.load_sample_img()
+        # img = self.load_sample_img()
         img = self.cv2pil(img)
         img = self.transform(img)
         
