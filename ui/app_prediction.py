@@ -1,3 +1,5 @@
+import sys
+sys.path.append("../src")
 import torch
 import pandas as pd
 import heapq
