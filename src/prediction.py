@@ -1,8 +1,9 @@
 import torch
-import numpy as np
+# import numpy as np
 import pandas as pd
 import heapq
-import cv2 # not recommended
+import cv2
+# import pickle
 
 from models import AllergyClassifierModel
 from system import AllergyClassifier
@@ -24,11 +25,12 @@ class Predictor():
     def hoge(self):
         img_path = "../img/sample_food.jpeg"
         img = cv2.imread(img_path)
+        img = cv2.resize(img, [224, 224])
         return img
 
     def predict(self, img):
         # データを入れる部分
-        # # --------------
+        # --------------
         # from datasets import FoodDataModule
         # dataset = FoodDataModule(
         #     data_dir='../food-101/images/',
@@ -45,7 +47,10 @@ class Predictor():
         with torch.no_grad():
             # output = classifier(img.unsqueeze(0))
             # output_f = classifier(img.unsqueeze(0))
-            output_a = self.classifier(img.unsqueeze(0))
+            output_a = self.classifier(torch.tensor(img).unsqueeze(0))
+            print(img.shape)
+            print(img.unsqueeze(0).shape)
+            # output_a = self.classifier(img)
         # print(output.argmax(), label)
         # print(output)
 
@@ -78,7 +83,7 @@ class Predictor():
             if value == temp:
                 break
             else:
-                for ind in index_list(output_a, value):
+                for ind in self.index_list(output_a, value):
                     # print(ind)
                     possible_allergen_list.append([ind, table_column[ind] ,value])
             temp = value
