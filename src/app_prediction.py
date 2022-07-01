@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import heapq
 import cv2
-from PIL import Image
 from torchvision import transforms
 
 from models import AllergyClassifierModel
@@ -20,9 +19,9 @@ class Predictor():
         self.classifier.load_state_dict(self.ckpt['state_dict'])
         self.classifier.eval()
         self.transform = transforms.Compose([
+            transforms.ToTensor(),
             transforms.Resize(256),
             transforms.CenterCrop(224),
-            transforms.ToTensor(),
             transforms.Normalize(
                 mean=[0.485, 0.456, 0.406],
                 std=[0.229, 0.224, 0.225]),
@@ -43,14 +42,6 @@ class Predictor():
         img = cv2.imread(img_path)
         return img
 
-    def cv2pil(self, img):
-        ''' OpenCV型 -> PIL型 '''
-        """https://qiita.com/derodero24/items/f22c22b22451609908ee"""
-        new_img = img.copy()
-        new_img = new_img[:, :, ::-1]
-        new_img = Image.fromarray(new_img).convert("RGB")
-        return new_img
-
     def top_n_list(self, output, n, hoge_list):
         possible_list = []
         temp = 0
@@ -67,11 +58,7 @@ class Predictor():
     def predict(self, img, output="a", debug=False):
         if debug:
             img = self.load_sample_img()
-        print(img)
-        img = self.cv2pil(img)
-        print(img)
         img = self.transform(img)
-        print(img)
         
         with torch.no_grad():
             if output == "a":
