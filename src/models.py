@@ -16,8 +16,7 @@ class AllergyClassifierModel(nn.Module):
             nn.Flatten(start_dim=1, end_dim=-1),
             nn.Linear(in_features=1536, out_features=101, bias=True)
         )
-        self.out = AllergyLinear(in_features=101, out_features=1,
-                                 weight_file=weight_file)
+        self.out = AllergyLinear(weight_file=weight_file)
 
     def forward(self, x):
         x = self.convnext(x)
@@ -25,12 +24,7 @@ class AllergyClassifierModel(nn.Module):
         x = nnf.softmax(x, dim=1)
         x = self.out(x)
         return x
-    
-    def forward_demo(self, x):
-        x = self.convnext(x)
-        x = self.seq(x)
-        x = nnf.softmax(x, dim=1)
-        return x
+
 
 class LayerNorm2d(nn.LayerNorm):
     def forward(self, x):
@@ -42,12 +36,8 @@ class LayerNorm2d(nn.LayerNorm):
 
 
 class AllergyLinear(nn.Module):
-    def __init__(self, in_features, out_features, 
-                 weight_file='../data/meta/weights.csv'):
+    def __init__(self, weight_file='../data/meta/weights.csv'):
         super().__init__()
-        self.in_features = in_features
-        self.out_features = out_features
-
         weights = np.loadtxt(weight_file, delimiter=',', skiprows=1, 
                              usecols=range(1, 28), dtype='float32')
         self.weight = nn.Parameter(torch.as_tensor(weights.T), 
