@@ -68,7 +68,6 @@ class Predictor():
     def predict(self, img, output="a", debug=False):
         if debug:
             img = self.load_sample_img()
-        # img = np.random.randint(0, 256, (300,300,3), dtype="uint8")
         img = self.transform(img)
 
         with torch.no_grad():
@@ -76,7 +75,6 @@ class Predictor():
                 output_a = self.classifier(img.unsqueeze(0))
                 
             elif output == "f":
-                # output_f = self.classifier(img.unsqueeze(0))
                 output_f = self.classifier.model.forward_demo(img.unsqueeze(0))
                 output_a = torch.mm(output_f, torch.tensor(self.weights))
             else:
@@ -87,7 +85,6 @@ class Predictor():
 
         if output == "a":
             output_a = output_a.tolist()[0]
-            # possible_allergen_list = self.top_n_list(output_a, n=27, hoge_list=self.allergen_list)
             possible_allergen_list = self.list_sort(output_a, self.allergen_list)
             print(possible_allergen_list)
             return possible_allergen_list
@@ -96,9 +93,7 @@ class Predictor():
             output_f = output_f.tolist()[0]
             output_a = output_a.tolist()[0]
             possible_foods_list = self.list_sort(output_f, self.food_list)
-            # possible_foods_list = self.top_n_list(output_f, n=101, hoge_list=self.food_list)
             possible_allergen_list = self.list_sort(output_a, self.allergen_list)
-            # possible_allergen_list = self.top_n_list(output_a, n=27, hoge_list=self.allergen_list)
             print(possible_foods_list[:5])
             print(possible_allergen_list[:5])
             return possible_foods_list, possible_allergen_list
