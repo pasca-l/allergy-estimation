@@ -12,19 +12,20 @@ def main():
     while True:
         ret, frame = cap.read()
         if ret:
-            mask = np.ones(frame.shape, dtype = "uint8") * 10
-            frame += mask
-
-            result = p.predict(frame)
+            # result = p.predict(frame)
             cv2.putText(frame,
                 # text=f'possible_foods_dict{rand}',
-                text = f'text{result}',
+                text = f'text',#{result}',
                 org=(150, 30),
                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                 fontScale=1.0,
                 color=(0, 255, 0),
                 thickness=2,
                 lineType=cv2.LINE_4)
+
+            cv2.rectangle(frame, (50, 10), (125, 60), (255, 0, 0), thickness=-1)
+
+            cv2.imshow('Video', frame)
 
         key = cv2.waitKey(1)
         if key == ord("q"):
