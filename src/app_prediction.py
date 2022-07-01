@@ -43,18 +43,6 @@ class Predictor():
         img = cv2.imread(img_path)
         return img
 
-    def top_n_list(self, output, n, hoge_list):
-        possible_list = []
-        temp = -1
-        for value in (heapq.nlargest(n, output)):
-            if value == temp:
-                break
-            else:
-                for ind in self.index_list(output, value):
-                    possible_list.append([ind, hoge_list[ind], value])
-            temp = value        
-        return possible_list
-
     def list_sort(self, output, hoge_list):
         sorted_output = np.sort(output)[::-1]
 
