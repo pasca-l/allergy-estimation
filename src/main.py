@@ -11,7 +11,7 @@ def main():
         ann_dir='../food-101/meta/',
         class_file='../food-101/meta/classes.txt',
         weight_file='../food-101/meta/weights.csv',
-        batch_size=16
+        batch_size=8
     )
     model = AllergyClassifierModel(
         weight_file='../food-101/meta/weights.csv'
@@ -19,12 +19,17 @@ def main():
     classifier = AllergyClassifier(model)
 
     logger = pl.loggers.TensorBoardLogger(
-        save_dir='../logs/',
+        save_dir='../logs/'
     )
-    checkpoint_callback = pl.callbacks.ModelCheckpoint(
-        dirpath='../logs/',
-        save_weights_only=True,
-        save_top_k=1
+    # checkpoint_callback = pl.callbacks.ModelCheckpoint(
+    #     save_top_k=1,
+    #     save_weights_only=True,
+    #     monitor='val_loss',
+    #     dirpath='../logs/',
+    #     filename="{epoch:02d}-{val_loss:.2f}"
+    # )
+    checkpoint_callback = pl.callbacks.EarlyStopping(
+        monitor='val_loss'
     )
     trainer = pl.Trainer(
         accelerator='auto',

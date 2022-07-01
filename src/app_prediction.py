@@ -5,11 +5,13 @@ import heapq
 import cv2
 from torchvision import transforms
 
+from datasets import FoodImageTransform
 from models import AllergyClassifierModel
 from system import AllergyClassifier
 
+
 class Predictor():
-    def __init__(self) -> None:
+    def __init__(self):
         self.weight_file = "../food-101/meta/weights.csv"
         self.model = AllergyClassifierModel(
             weight_file=self.weight_file
@@ -32,7 +34,6 @@ class Predictor():
         self.weights = torch.tensor(np.loadtxt(self.weight_file, delimiter=',', skiprows=1, 
                 usecols=range(1, 28), dtype='float32'))
 
-
     def index_list(self, l, x):
         return [i for i, _x in enumerate(l) if _x == x]
 
@@ -54,12 +55,11 @@ class Predictor():
             temp = value        
         return possible_list
 
-
     def predict(self, img, output="a", debug=False):
         if debug:
             img = self.load_sample_img()
         img = self.transform(img)
-        
+
         with torch.no_grad():
             if output == "a":
                 output_a = self.classifier(img.unsqueeze(0))
