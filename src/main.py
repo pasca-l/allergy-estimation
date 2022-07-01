@@ -22,9 +22,10 @@ def main():
         save_dir='../logs/',
     )
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
-        dirpath='../logs/',
+        save_top_k=3,
         save_weights_only=True,
-        save_top_k=1
+        dirpath='../logs/',
+        filename="{epoch:02d}-{val_loss:.2f}",
     )
     trainer = pl.Trainer(
         accelerator='auto',
