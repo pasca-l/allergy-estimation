@@ -1,6 +1,7 @@
 import sys
 sys.path.append("../src")
 import torch
+import numpy as np
 import pandas as pd
 import heapq
 import cv2
@@ -31,6 +32,9 @@ class Predictor():
         self.table = pd.read_csv(self.weight_file)
         self.allergen_list = list(self.table.columns)[1:]
         self.food_list = list(self.table["table"])
+        self.weights = torch.tensor(np.loadtxt(self.weight_file, delimiter=',', skiprows=1, 
+                usecols=range(1, 28), dtype='float32'))
+
 
     def index_list(self, l, x):
         return [i for i, _x in enumerate(l) if _x == x]
@@ -61,27 +65,31 @@ class Predictor():
         return possible_list
 
 
-    def predict(self, img):
+    def predict(self, img, output = "a"):
         # img = self.load_sample_img()
         img = self.cv2pil(img)
         img = self.transform(img)
         
         with torch.no_grad():
-            # output_f = self.classifier(img.unsqueeze(0))
-            output_a = self.classifier(img.unsqueeze(0))
+            if output == "a":
+                output_a = self.classifier(img.unsqueeze(0))
+            elif output == "f":
+                output_f = self.classifier(img.unsqueeze(0))
+                output_a = torch.mm(output_f, torch.t(self.weights))
 
-        # output_f = output_f.tolist()
-        output_a = output_a.tolist()[0]
-
-        possible_foods_list = []
-        possible_allergen_list = [] 
         n = 3
 
-        # possible_foods_list = self.top_n_list(output_f, n)
-        possible_allergen_list = self.top_n_list(output_a, n)
+        if output == "a":
+            output_a = output_a.tolist()[0]
+            possible_allergen_list = self.top_n_list(output_a, n)
+            print(possible_allergen_list)
+            return possible_allergen_list
 
-        # print(possible_foods_list)
-        print(possible_allergen_list)
-    
-        return possible_allergen_list
-        # return possible_foods_list, possible_allergen_list
+        elif output == "f":
+            output_f = output_f.tolist()[0]
+            output_a = output_a.tolist()[0]
+            possible_foods_list = self.top_n_list(output_f, n)
+            possible_allergen_list = self.top_n_list(output_a, n)
+            print(possible_foods_list)
+            print(possible_allergen_list)
+            return possible_foods_list, possible_allergen_list
