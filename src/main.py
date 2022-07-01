@@ -7,37 +7,39 @@ from datasets import FoodDataModule
 
 def main():
     dataset = FoodDataModule(
-        data_dir='../food-101/images/',
-        ann_dir='../food-101/meta/',
-        class_file='../food-101/meta/classes.txt',
-        weight_file='../food-101/meta/weights.csv',
+        data_dir='../../../datasets/food-101/images/',
+        ann_dir='../../../datasets/food-101/meta/',
+        class_file='../../../datasets/food-101/meta/classes.txt',
+        weight_file='../meta/weights.csv',
         batch_size=8
     )
     model = AllergyClassifierModel(
-        weight_file='../food-101/meta/weights.csv'
+        weight_file='../meta/weights.csv'
     )
     classifier = AllergyClassifier(model)
 
     logger = pl.loggers.TensorBoardLogger(
         save_dir='../logs/'
     )
-    # checkpoint_callback = pl.callbacks.ModelCheckpoint(
-    #     save_top_k=1,
-    #     save_weights_only=True,
-    #     monitor='val_loss',
-    #     dirpath='../logs/',
-    #     filename="{epoch:02d}-{val_loss:.2f}"
-    # )
-    checkpoint_callback = pl.callbacks.EarlyStopping(
-        monitor='val_loss'
+    checkpoint_callback = pl.callbacks.ModelCheckpoint(
+        save_top_k=1,
+        save_weights_only=True,
+        monitor='val_loss',
+        mode='min',
+        dirpath='../logs/',
+        filename="{epoch:02d}-{val_loss:.2f}"
+    )
+    early_stopping = pl.callbacks.EarlyStopping(
+        monitor='val_loss',
+        mode='min'
     )
     trainer = pl.Trainer(
         accelerator='auto',
         devices='auto',
         auto_select_gpus=True,
-        max_epochs=1,
+        max_epochs=30,
         logger=logger,
-        callbacks=[checkpoint_callback]
+        callbacks=[checkpoint_callback, early_stopping]
     )
 
     trainer.fit(classifier, dataset)
