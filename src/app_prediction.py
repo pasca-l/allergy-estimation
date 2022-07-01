@@ -1,5 +1,3 @@
-import sys
-# sys.path.append("../src")
 import torch
 import numpy as np
 import pandas as pd
@@ -40,7 +38,8 @@ class Predictor():
         return [i for i, _x in enumerate(l) if _x == x]
 
     def load_sample_img(self):
-        img_path = "../img/sample_food.jpeg"
+        # img_path = "../img/sample_food.jpeg"
+        img_path = "../img/36641.jpg"
         img = cv2.imread(img_path)
         return img
 
@@ -49,10 +48,10 @@ class Predictor():
         """https://qiita.com/derodero24/items/f22c22b22451609908ee"""
         new_img = img.copy()
         new_img = new_img[:, :, ::-1]
-        new_img = Image.fromarray(new_img)
+        new_img = Image.fromarray(new_img).convert("RGB")
         return new_img
 
-    def top_n_list(self, output, n):
+    def top_n_list(self, output, n, hoge_list):
         possible_list = []
         temp = 0
         for value in (heapq.nlargest(n, output)):
@@ -60,7 +59,7 @@ class Predictor():
                 break
             else:
                 for ind in self.index_list(output, value):
-                    possible_list.append([ind, self.allergen_list[ind] ,value])
+                    possible_list.append([ind, hoge_list[ind] ,value])
             temp = value        
         return possible_list
 
@@ -68,15 +67,20 @@ class Predictor():
     def predict(self, img, output="a", debug=False):
         if debug:
             img = self.load_sample_img()
+        print(img)
         img = self.cv2pil(img)
+        print(img)
         img = self.transform(img)
+        print(img)
         
         with torch.no_grad():
             if output == "a":
                 output_a = self.classifier(img.unsqueeze(0))
+                
             elif output == "f":
-                output_f = self.classifier(img.unsqueeze(0))
-                output_a = torch.mm(output_f, torch.t(self.weights))
+                # output_f = self.classifier(img.unsqueeze(0))
+                output_f = self.classifier.model.forward_demo(img.unsqueeze(0))
+                output_a = torch.mm(output_f, torch.tensor(self.weights))
             else:
                 print("output should be \"a\" or \"f\"")
                 return
@@ -85,15 +89,15 @@ class Predictor():
 
         if output == "a":
             output_a = output_a.tolist()[0]
-            possible_allergen_list = self.top_n_list(output_a, n)
+            possible_allergen_list = self.top_n_list(output_a, n, self.allergen_list)
             print(possible_allergen_list)
             return possible_allergen_list
 
         elif output == "f":
             output_f = output_f.tolist()[0]
             output_a = output_a.tolist()[0]
-            possible_foods_list = self.top_n_list(output_f, n)
-            possible_allergen_list = self.top_n_list(output_a, n)
+            possible_foods_list = self.top_n_list(output_f, n, self.food_list)
+            possible_allergen_list = self.top_n_list(output_a, n, self.allergen_list)
             print(possible_foods_list)
             print(possible_allergen_list)
             return possible_foods_list, possible_allergen_list

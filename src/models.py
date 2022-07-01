@@ -25,7 +25,12 @@ class AllergyClassifierModel(nn.Module):
         x = nnf.softmax(x, dim=1)
         x = self.out(x)
         return x
-
+    
+    def forward_demo(self, x):
+        x = self.convnext(x)
+        x = self.seq(x)
+        x = nnf.softmax(x, dim=1)
+        return x
 
 class LayerNorm2d(nn.LayerNorm):
     def forward(self, x):
