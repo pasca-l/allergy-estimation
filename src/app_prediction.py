@@ -1,5 +1,5 @@
 import sys
-sys.path.append("../src")
+# sys.path.append("../src")
 import torch
 import numpy as np
 import pandas as pd
@@ -76,6 +76,9 @@ class Predictor():
             elif output == "f":
                 output_f = self.classifier(img.unsqueeze(0))
                 output_a = torch.mm(output_f, torch.t(self.weights))
+            else:
+                print("output should be \"a\" or \"f\"")
+                return
 
         n = 3
 
