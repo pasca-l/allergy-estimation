@@ -65,8 +65,9 @@ class Predictor():
         return possible_list
 
 
-    def predict(self, img, output = "a"):
-        # img = self.load_sample_img()
+    def predict(self, img, output="a", debug=False):
+        if debug:
+            img = self.load_sample_img()
         img = self.cv2pil(img)
         img = self.transform(img)
         
