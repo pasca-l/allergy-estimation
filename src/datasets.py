@@ -79,8 +79,8 @@ class FoodDataset(Dataset):
     def __getitem__(self, index):
         img_name = self.img_list[index]
         img_path = os.path.join(self.data_dir, f"{img_name}.jpg")
-        pil_img = cv2.imread(img_path)
-        transformed_img = self.transform(pil_img)
+        np_img = cv2.imread(img_path)
+        transformed_img = self.transform(np_img)
 
         # class label (class #)
         class_name = img_name.split('/')[0]

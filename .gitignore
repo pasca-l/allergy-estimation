@@ -4,6 +4,7 @@
 venv/
 
 food-101/
+meta/
 logs/
 
 *.ipynb
