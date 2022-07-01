@@ -1,5 +1,4 @@
 import os
-import torch
 from torch.utils.data import Dataset, DataLoader, random_split
 from torchvision import transforms
 import pytorch_lightning as pl
@@ -26,8 +25,7 @@ class FoodDataModule(pl.LightningDataModule):
 
     def setup(self, stage=None):
         if stage == "fit" or stage is None:
-            full_dataset =\
-                FoodDataset('train', **self.path_dict)
+            full_dataset = FoodDataset('train', **self.path_dict)
             train_size = int(len(full_dataset) * 0.8)
             val_size = len(full_dataset) - train_size
 
@@ -35,8 +33,7 @@ class FoodDataModule(pl.LightningDataModule):
                 random_split(full_dataset, [train_size, val_size])
 
         if stage == "test" or stage is None:
-            self.test_data =\
-                FoodDataset('test', **self.path_dict)
+            self.test_data = FoodDataset('test', **self.path_dict)
 
         if stage == "predict":
             self.predict_data = None
@@ -72,16 +69,9 @@ class FoodDataset(Dataset):
         ann_file = os.path.join(path_dict['ann_dir'], f"{phase}.txt")
         self.img_list = open(ann_file, 'r').read().splitlines()
         self.class_list = open(path_dict['cls_file'], 'r').read().splitlines()
-        self.weights = np.loadtxt(path_dict['w_file'], delimiter=',',       
+        self.weights = np.loadtxt(path_dict['w_file'], delimiter=',',
                         skiprows=1, usecols=range(1, 28), dtype='float32')
-        self.transform = transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(
-                mean=[0.485, 0.456, 0.406],
-                std=[0.229, 0.224, 0.225]),
-        ])
+        self.transform = FoodImageTransform()
 
     def __len__(self):
         return len(self.img_list)
@@ -100,3 +90,18 @@ class FoodDataset(Dataset):
         label = self.weights[class_num]
 
         return transformed_img, label
+
+
+class FoodImageTransform():
+    def __init__(self):
+        self.data_transform = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]),
+        ])
+
+    def __call__(self, img):
+        return self.data_transform(img)
