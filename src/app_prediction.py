@@ -29,8 +29,8 @@ class Predictor():
                 std=[0.229, 0.224, 0.225]),
         ])
         self.table = pd.read_csv(self.weight_file)
-        self.allergen_list = list(self.table.columns)[1:]
-        self.food_list = list(self.table["table"])
+        self.allergen_list = np.array(self.table.columns)[1:]
+        self.food_list = np.array(self.table["table"])
         self.weights = torch.tensor(np.loadtxt(self.weight_file, delimiter=',', skiprows=1, 
                 usecols=range(1, 28), dtype='float32'))
 
@@ -45,15 +45,25 @@ class Predictor():
 
     def top_n_list(self, output, n, hoge_list):
         possible_list = []
-        temp = 0
+        temp = -1
         for value in (heapq.nlargest(n, output)):
             if value == temp:
                 break
             else:
                 for ind in self.index_list(output, value):
-                    possible_list.append([ind, hoge_list[ind] ,value])
+                    possible_list.append([ind, hoge_list[ind], value])
             temp = value        
         return possible_list
+
+    def list_sort(self, output, hoge_list):
+        sorted_output = np.sort(output)[::-1]
+
+        sorted_list = hoge_list[np.argsort(output)][::-1]
+        possible_list = []
+        for ind in range(len(output)):
+            possible_list.append([np.argsort(output)[ind], sorted_list[ind], sorted_output[ind]])
+        return possible_list
+
 
     def predict(self, img, output="a", debug=False):
         if debug:
@@ -65,26 +75,25 @@ class Predictor():
                 output_a = self.classifier(img.unsqueeze(0))
                 
             elif output == "f":
-                # output_f = self.classifier(img.unsqueeze(0))
                 output_f = self.classifier.model.forward_demo(img.unsqueeze(0))
                 output_a = torch.mm(output_f, torch.tensor(self.weights))
             else:
                 print("output should be \"a\" or \"f\"")
                 return
 
-        n = 3
+        # n = 3
 
         if output == "a":
             output_a = output_a.tolist()[0]
-            possible_allergen_list = self.top_n_list(output_a, n, self.allergen_list)
+            possible_allergen_list = self.list_sort(output_a, self.allergen_list)
             print(possible_allergen_list)
             return possible_allergen_list
 
         elif output == "f":
             output_f = output_f.tolist()[0]
             output_a = output_a.tolist()[0]
-            possible_foods_list = self.top_n_list(output_f, n, self.food_list)
-            possible_allergen_list = self.top_n_list(output_a, n, self.allergen_list)
-            print(possible_foods_list)
-            print(possible_allergen_list)
+            possible_foods_list = self.list_sort(output_f, self.food_list)
+            possible_allergen_list = self.list_sort(output_a, self.allergen_list)
+            print(possible_foods_list[:5])
+            print(possible_allergen_list[:5])
             return possible_foods_list, possible_allergen_list
