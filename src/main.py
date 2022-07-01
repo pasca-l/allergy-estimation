@@ -19,7 +19,7 @@ def main():
     classifier = AllergyClassifier(model)
 
     logger = pl.loggers.TensorBoardLogger(
-        save_dir='../logs/',
+        save_dir='../logs/'
     )
     # checkpoint_callback = pl.callbacks.ModelCheckpoint(
     #     save_top_k=1,
@@ -29,7 +29,7 @@ def main():
     #     filename="{epoch:02d}-{val_loss:.2f}"
     # )
     checkpoint_callback = pl.callbacks.EarlyStopping(
-        monitor='val_loss',
+        monitor='val_loss'
     )
     trainer = pl.Trainer(
         accelerator='auto',

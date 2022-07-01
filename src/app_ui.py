@@ -6,24 +6,25 @@ from app_prediction import Predictor
 
 
 def main():
-    p = Predictor()
+    # p = Predictor()
 
     cap = cv2.VideoCapture(0)
     while True:
         ret, frame = cap.read()
-        mask = np.ones(frame.shape, dtype = "uint8") * 10
-        frame += mask
+        if ret:
+            mask = np.ones(frame.shape, dtype = "uint8") * 10
+            frame += mask
 
-        result = p.predict(frame)
-        cv2.putText(frame,
-            # text=f'possible_foods_dict{rand}',
-            text = f'text{result}',
-            org=(150, 30),
-            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-            fontScale=1.0,
-            color=(0, 255, 0),
-            thickness=2,
-            lineType=cv2.LINE_4)
+            result = p.predict(frame)
+            cv2.putText(frame,
+                # text=f'possible_foods_dict{rand}',
+                text = f'text{result}',
+                org=(150, 30),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1.0,
+                color=(0, 255, 0),
+                thickness=2,
+                lineType=cv2.LINE_4)
 
         key = cv2.waitKey(1)
         if key == ord("q"):
