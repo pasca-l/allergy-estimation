@@ -10,14 +10,14 @@ class AllergyClassifier(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         x, y = batch
-        y_hat = self.model(x)
-        loss = nnf.cross_entropy(y_hat, y)
+        logits = self.model(x)
+        loss = nnf.cross_entropy(logits, y)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
-        y_hat = self.model(x)
-        loss = nnf.cross_entropy(y_hat, y)
+        logits = self.model(x)
+        loss = nnf.cross_entropy(logits, y)
         self.log("val_loss", loss)
 
     def forward(self, x):
