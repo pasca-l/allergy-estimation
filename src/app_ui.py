@@ -6,7 +6,15 @@ from app_prediction import Predictor
 
 
 def main():
-    # p = Predictor()
+    img_path = "../img/36641.jpg"
+    img = cv2.imread(img_path)
+
+    p = Predictor(
+        weight_file='../meta/weights.csv', 
+        ckpt_file='../logs/imagecls_epoch=02-val_loss=4.62.ckpt'
+    )
+    p.predict(img)
+    return
 
     cap = cv2.VideoCapture(0)
     while True:
