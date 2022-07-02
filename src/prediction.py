@@ -38,7 +38,7 @@ class Predictor():
         ordered_food_name = self.food_list[np.argsort(food_prob)]
         ordered_food_prob = np.sort(food_prob)
 
-        allergen_prob = torch.mm(food_prob, torch.tensor(self.weights))
+        allergen_prob = np.dot(food_prob.numpy().copy(), self.weights)
         ordered_allergen_name = self.allergen_list[np.argsort(allergen_prob)]
         ordered_allergen_prob = np.sort(allergen_prob)
 

@@ -13,7 +13,8 @@ def main():
         weight_file='../meta/weights.csv', 
         ckpt_file='../logs/imagecls_epoch=02-val_loss=4.62.ckpt'
     )
-    p.predict(img)
+    _, a, b = p.predict(img)
+    print(a + b.astype('str'))
     return
 
     cap = cv2.VideoCapture(0)
