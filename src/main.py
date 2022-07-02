@@ -32,7 +32,8 @@ def main():
     )
     early_stopping = pl.callbacks.EarlyStopping(
         monitor='val_loss',
-        mode='min'
+        mode='min',
+        patience=10
     )
     trainer = pl.Trainer(
         accelerator='auto',
