@@ -43,7 +43,8 @@ class Predictor():
         ordered_allergen_prob = np.sort(allergen_prob)
 
         return (
-            ordered_food_name[0][::-1][0],
+            ordered_food_name[0][::-1],
+            ordered_food_prob[0][::-1],
             ordered_allergen_name[0][::-1],
             ordered_allergen_prob[0][::-1]
         )
