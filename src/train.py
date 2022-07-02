@@ -28,7 +28,7 @@ def main():
         monitor='val_loss',
         mode='min',
         dirpath='../logs/',
-        filename="imagecls_{epoch:02d}-{val_loss:.2f}"
+        filename="{epoch:02d}-{val_loss:.2f}"
     )
     early_stopping = pl.callbacks.EarlyStopping(
         monitor='val_loss',
