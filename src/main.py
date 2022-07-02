@@ -6,16 +6,18 @@ from datasets import FoodDataModule
 
 
 def main():
+    data_dir_path = '../../../datasets/food-101/images/'
+    ann_dir_path = '../../../datasets/food-101/meta/'
+    class_file_path = '../../../datasets/food-101/meta/classes.txt'
+    weight_file_path = '../meta/weights.csv'
+
     dataset = FoodDataModule(
-        data_dir='../../../datasets/food-101/images/',
-        ann_dir='../../../datasets/food-101/meta/',
-        class_file='../../../datasets/food-101/meta/classes.txt',
-        weight_file='../meta/weights.csv',
+        data_dir=data_dir_path,
+        ann_dir=ann_dir_path,
+        class_file=class_file_path,
         batch_size=8
     )
-    model = AllergyClassifierModel(
-        weight_file='../meta/weights.csv'
-    )
+    model = AllergyClassifierModel()
     classifier = AllergyClassifier(model)
 
     logger = pl.loggers.TensorBoardLogger(
@@ -27,7 +29,11 @@ def main():
         monitor='val_loss',
         mode='min',
         dirpath='../logs/',
-        filename="{epoch:02d}-{val_loss:.2f}"
+        filename="imagecls_{epoch:02d}-{val_loss:.2f}"
+    )
+    early_stopping = pl.callbacks.EarlyStopping(
+        monitor='val_loss',
+        mode='min'
     )
     trainer = pl.Trainer(
         accelerator='auto',
@@ -35,7 +41,7 @@ def main():
         auto_select_gpus=True,
         max_epochs=30,
         logger=logger,
-        callbacks=[checkpoint_callback]
+        callbacks=[checkpoint_callback, early_stopping]
     )
 
     trainer.fit(classifier, dataset)

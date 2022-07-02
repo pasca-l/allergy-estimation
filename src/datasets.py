@@ -11,7 +11,6 @@ class FoodDataModule(pl.LightningDataModule):
         data_dir='../data/images/',
         ann_dir='../data/meta/',
         class_file='../data/meta/classes.txt',
-        weight_file='../data/meta/weights.csv',
         batch_size=1
     ):
         super().__init__()
@@ -19,7 +18,6 @@ class FoodDataModule(pl.LightningDataModule):
             "data_dir": data_dir,
             "ann_dir": ann_dir,
             "cls_file": class_file,
-            "w_file": weight_file
         }
         self.batch_size = batch_size
 
@@ -69,8 +67,6 @@ class FoodDataset(Dataset):
         ann_file = os.path.join(path_dict['ann_dir'], f"{phase}.txt")
         self.img_list = open(ann_file, 'r').read().splitlines()
         self.class_list = open(path_dict['cls_file'], 'r').read().splitlines()
-        self.weights = np.loadtxt(path_dict['w_file'], delimiter=',',
-                        skiprows=1, usecols=range(1, 28), dtype='float32')
         self.transform = FoodImageTransform()
 
     def __len__(self):
@@ -85,9 +81,7 @@ class FoodDataset(Dataset):
         # class label (class #)
         class_name = img_name.split('/')[0]
         class_num = self.class_list.index(class_name)
-
-        # allergy label (list of allergy percentage)
-        label = self.weights[class_num]
+        label = np.identity(101)[class_num]
 
         return transformed_img, label
 
