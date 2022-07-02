@@ -23,9 +23,9 @@ class Predictor():
 
         self.transform = FoodImageTransform()
         self.allergen_list = np.loadtxt(weight_file, delimiter=',', 
-                                        dtype='unicode')[:1,1:][0]
+                                        dtype='object')[:1,1:][0]
         self.food_list = np.loadtxt(weight_file, delimiter=',', skiprows=1,
-                                    usecols=[0], dtype='unicode')
+                                    usecols=[0], dtype='object')
         self.weights = np.loadtxt(weight_file, delimiter=',', skiprows=1, 
                                   usecols=range(1, 28), dtype='float32')
 
