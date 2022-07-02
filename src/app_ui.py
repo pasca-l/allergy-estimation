@@ -2,18 +2,21 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-from app_prediction import Predictor
+from prediction import Predictor
 
 
 def main():
     img_path = "../img/36641.jpg"
     img = cv2.imread(img_path)
 
+    weight_file_path = '../meta/weights.csv'
+    ckpt_file_path = '../logs/imagecls_epoch=02-val_loss=4.62.ckpt'
+
     p = Predictor(
-        weight_file='../meta/weights.csv', 
-        ckpt_file='../logs/imagecls_epoch=02-val_loss=4.62.ckpt'
+        weight_file=weight_file_path, 
+        ckpt_file=ckpt_file_path
     )
-    _, a, b = p.predict(img)
+    _, _, a, b = p.predict(img)
     print(a + b.astype('str'))
     return
 
