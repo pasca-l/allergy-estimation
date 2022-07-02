@@ -9,7 +9,6 @@ def main():
     data_dir_path = '../../../datasets/food-101/images/'
     ann_dir_path = '../../../datasets/food-101/meta/'
     class_file_path = '../../../datasets/food-101/meta/classes.txt'
-    weight_file_path = '../meta/weights.csv'
 
     dataset = FoodDataModule(
         data_dir=data_dir_path,
