@@ -10,32 +10,35 @@ def main():
     img = cv2.imread(img_path)
 
     weight_file_path = '../meta/weights.csv'
-    ckpt_file_path = '../logs/imagecls_epoch=02-val_loss=4.62.ckpt'
+    ckpt_file_path = '../logs/epoch=00-val_loss=4.62.ckpt'
 
     p = Predictor(
         weight_file=weight_file_path, 
         ckpt_file=ckpt_file_path
     )
-    _, _, a, b = p.predict(img)
-    print(a + b.astype('str'))
-    return
+
+    def put_text(frame, text, position, color, scale):
+        cv2.putText(
+            frame,
+            text=text,
+            org=position,
+            color=color,
+            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            fontScale=scale,
+            thickness=2,
+            lineType=cv2.LINE_4
+        )
 
     cap = cv2.VideoCapture(0)
     while True:
         ret, frame = cap.read()
         if ret:
-            # result = p.predict(frame)
-            cv2.putText(frame,
-                # text=f'possible_foods_dict{rand}',
-                text = f'text',#{result}',
-                org=(150, 30),
-                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=1.0,
-                color=(0, 255, 0),
-                thickness=2,
-                lineType=cv2.LINE_4)
+            food_name, food_prob, allergy_name, allergy_prob = p.predict(frame)
 
-            cv2.rectangle(frame, (50, 10), (125, 60), (255, 0, 0), thickness=-1)
+            put_text(frame, food_name[0], (30, 40), (0, 0, 255), 1)
+            for i in range(27):
+                result = f"{allergy_name[i]:<10} : {allergy_prob[i]}"
+                put_text(frame, result, (30, 80 + 30 * i), (0, 255, 0), 0.7)
 
             cv2.imshow('Video', frame)
 
@@ -43,7 +46,7 @@ def main():
         if key == ord("q"):
             break
         if key == ord("w"):
-            cv2.imwrite("./image.png", frame)
+            cv2.imwrite("../img/image.png", frame)
 
 
 if __name__ == '__main__':
