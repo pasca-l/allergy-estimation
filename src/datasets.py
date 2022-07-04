@@ -78,12 +78,11 @@ class FoodDataset(Dataset):
         np_img = cv2.imread(img_path)
         transformed_img = self.transform(np_img)
 
-        # class label (class #)
         class_name = img_name.split('/')[0]
         class_num = self.class_list.index(class_name)
-        label = np.identity(101)[class_num]
+        # onehot_label = np.identity(101)[class_num]
 
-        return transformed_img, label
+        return transformed_img, class_num
 
 
 class FoodImageTransform():

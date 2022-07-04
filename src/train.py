@@ -25,23 +25,18 @@ def main():
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         save_top_k=1,
         save_weights_only=True,
-        monitor='val_loss',
+        monitor="train_loss",
         mode='min',
         dirpath='../logs/',
-        filename="{epoch:02d}-{val_loss:.2f}"
-    )
-    early_stopping = pl.callbacks.EarlyStopping(
-        monitor='val_loss',
-        mode='min',
-        patience=10
+        filename="trained_model"
     )
     trainer = pl.Trainer(
         accelerator='auto',
         devices='auto',
         auto_select_gpus=True,
-        max_epochs=30,
+        max_epochs=10,
         logger=logger,
-        callbacks=[checkpoint_callback, early_stopping]
+        callbacks=[checkpoint_callback]
     )
 
     trainer.fit(classifier, dataset)
