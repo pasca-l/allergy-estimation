@@ -30,13 +30,17 @@ def main():
         dirpath='../logs/',
         filename="trained_model"
     )
+    early_stopping = pl.callbacks.EarlyStopping(
+        monitor="train_loss",
+        mode='min'
+    )
     trainer = pl.Trainer(
         accelerator='auto',
         devices='auto',
         auto_select_gpus=True,
         max_epochs=10,
         logger=logger,
-        callbacks=[checkpoint_callback]
+        callbacks=[checkpoint_callback, early_stopping]
     )
 
     trainer.fit(classifier, dataset)

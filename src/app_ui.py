@@ -1,16 +1,13 @@
+import os
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 
 from prediction import Predictor
 
 
 def main():
-    img_path = "../img/36641.jpg"
-    img = cv2.imread(img_path)
-
     weight_file_path = '../meta/weights.csv'
-    ckpt_file_path = '../logs/epoch=00-val_loss=4.62.ckpt'
+    ckpt_file_path = '../logs/trained_model.ckpt'
 
     p = Predictor(
         weight_file=weight_file_path, 
@@ -40,13 +37,14 @@ def main():
                 result = f"{allergy_name[i]:<10} : {allergy_prob[i]}"
                 put_text(frame, result, (30, 80 + 30 * i), (0, 255, 0), 0.7)
 
-            cv2.imshow('Video', frame)
+            cv2.imshow("Allergen Estimation", frame)
 
         key = cv2.waitKey(1)
         if key == ord("q"):
             break
         if key == ord("w"):
-            cv2.imwrite("../img/image.png", frame)
+            os.mkdir("../screenshots/", exist_ok=True)
+            cv2.imwrite("../screenshots/image.png", frame)
 
 
 if __name__ == '__main__':
