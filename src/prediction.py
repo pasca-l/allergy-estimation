@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import torch.nn.functional as nnf
 from torchvision import transforms
 
 from datasets import FoodImageTransform
@@ -33,9 +34,10 @@ class Predictor():
         img = self.transform(img)
 
         with torch.no_grad():
-            food_prob = self.classifier(img.unsqueeze(0))
+            food_logits = self.classifier(img.unsqueeze(0))
 
-        ordered_food_name = self.food_list[np.argsort(food_prob)]
+        ordered_food_name = self.food_list[np.argsort(food_logits)]
+        food_prob = nnf.softmax(food_logits)
         ordered_food_prob = np.sort(food_prob)
 
         allergen_prob = np.dot(food_prob.numpy().copy(), self.weights)
