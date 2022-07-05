@@ -27,15 +27,27 @@ def main():
         )
 
     cap = cv2.VideoCapture(0)
+    bg_flag = True
     while True:
         ret, frame = cap.read()
         if ret:
             food_name, food_prob, allergy_name, allergy_prob = p.predict(frame)
 
-            put_text(frame, food_name[0], (30, 40), (0, 0, 255), 1)
-            for i in range(27):
-                result = f"{allergy_name[i]:<10} : {allergy_prob[i]}"
-                put_text(frame, result, (30, 80 + 30 * i), (0, 255, 0), 0.7)
+            if bg_flag:
+                mask = frame.copy()
+                cv2.rectangle(mask, (0,0), (450,1200), (255,0,0), thickness=-1)
+                frame = cv2.addWeighted(mask, alpha:=0.4, frame, 1 - alpha, 0)
+
+
+            for i in range(5):
+                result = f"{food_prob[i]*100:.1f}% {food_name[i]:<15}"
+                put_text(frame, result, (30,40+40*i), (0,0,255), 1)
+
+            for i in range(len(allergy_prob)):
+                put_text(frame, f"{allergy_name[i]}", 
+                         (30,250+30*i), (0,255,0), 0.7)
+                put_text(frame, f": {allergy_prob[i]*100:.1f}%",
+                         (180,250+30*i), (0,255,0), 0.7)
 
             cv2.imshow("Allergen Estimation", frame)
 
@@ -43,8 +55,10 @@ def main():
         if key == ord("q"):
             break
         if key == ord("w"):
-            os.mkdir("../screenshots/", exist_ok=True)
+            os.makedirs("../screenshots/", exist_ok=True)
             cv2.imwrite("../screenshots/image.png", frame)
+        if key == ord("f"):
+            bg_flag = not bg_flag
 
 
 if __name__ == '__main__':
