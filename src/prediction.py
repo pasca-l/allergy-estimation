@@ -37,7 +37,7 @@ class Predictor():
             food_logits = self.classifier(img.unsqueeze(0))
 
         ordered_food_name = self.food_list[np.argsort(food_logits)]
-        food_prob = nnf.softmax(food_logits)
+        food_prob = nnf.softmax(food_logits, dim=1)
         ordered_food_prob = np.sort(food_prob)
 
         allergen_prob = np.dot(food_prob.numpy().copy(), self.weights)
