@@ -36,8 +36,7 @@ def main():
             if bg_flag:
                 mask = frame.copy()
                 cv2.rectangle(mask, (0,0), (450,1200), (255,0,0), thickness=-1)
-                frame = cv2.addWeighted(mask, alpha:=0.4, frame, 1 - alpha, 0)
-
+                frame = cv2.addWeighted(mask, alpha:=0.4, frame, 1-alpha, 0)
 
             for i in range(5):
                 result = f"{food_prob[i]*100:.1f}% {food_name[i]:<15}"
