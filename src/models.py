@@ -1,5 +1,3 @@
-import numpy as np
-import torch
 import torch.nn as nn
 import torch.nn.functional as nnf
 # https://pytorch.org/vision/stable/models.html
@@ -30,16 +28,3 @@ class LayerNorm2d(nn.LayerNorm):
                 x, self.normalized_shape, self.weight, self.bias, self.eps)
         x = x.permute(0, 3, 1, 2)
         return x
-
-
-# class AllergyLinear(nn.Module):
-#     def __init__(self, weight_file='../data/meta/weights.csv'):
-#         super().__init__()
-#         weights = np.loadtxt(weight_file, delimiter=',', skiprows=1, 
-#                              usecols=range(1, 28), dtype='float32')
-#         self.weight = nn.Parameter(torch.as_tensor(weights.T), 
-#                                    requires_grad=False)
-
-#     def forward(self, x):
-#         x = nnf.linear(x, self.weight)
-#         return x

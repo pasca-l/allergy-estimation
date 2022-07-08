@@ -4,11 +4,13 @@ import torch.nn.functional as nnf
 import pytorch_lightning as pl
 import torchmetrics
 
+from models import AllergyClassifierModel
+
 
 class AllergyClassifier(pl.LightningModule):
-    def __init__(self, model):
+    def __init__(self):
         super().__init__()
-        self.model = model
+        self.model = AllergyClassifierModel()
         self.train_acc = torchmetrics.Accuracy()
         self.val_acc = torchmetrics.Accuracy()
 

@@ -1,10 +1,8 @@
 import numpy as np
 import torch
 import torch.nn.functional as nnf
-from torchvision import transforms
 
 from datasets import FoodImageTransform
-from models import AllergyClassifierModel
 from system import AllergyClassifier
 
 
@@ -13,8 +11,7 @@ class Predictor():
         weight_file='../data/meta/weights.csv',
         ckpt_file='../logs/model.ckpt'
     ):
-        self.model = AllergyClassifierModel()
-        self.classifier = AllergyClassifier(self.model)
+        self.classifier = AllergyClassifier()
         if torch.cuda.is_available():
             self.ckpt = torch.load(ckpt_file)
         else:
@@ -23,6 +20,7 @@ class Predictor():
         self.classifier.eval()
 
         self.transform = FoodImageTransform()
+
         self.allergen_list = np.loadtxt(weight_file, delimiter=',', 
                                         dtype='object')[:1,1:][0]
         self.food_list = np.loadtxt(weight_file, delimiter=',', skiprows=1,

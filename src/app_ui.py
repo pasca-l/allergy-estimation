@@ -1,6 +1,5 @@
 import os
 import cv2
-import numpy as np
 
 from prediction import Predictor
 
@@ -27,16 +26,14 @@ def main():
         )
 
     cap = cv2.VideoCapture(0)
-    bg_flag = True
     while True:
         ret, frame = cap.read()
         if ret:
             food_name, food_prob, allergy_name, allergy_prob = p.predict(frame)
 
-            if bg_flag:
-                mask = frame.copy()
-                cv2.rectangle(mask, (0,0), (450,1200), (255,0,0), thickness=-1)
-                frame = cv2.addWeighted(mask, alpha:=0.4, frame, 1-alpha, 0)
+            mask = frame.copy()
+            cv2.rectangle(mask, (0,0), (450,1200), (255,0,0), thickness=-1)
+            frame = cv2.addWeighted(mask, alpha:=0.4, frame, 1-alpha, 0)
 
             for i in range(5):
                 result = f"{food_prob[i]*100:.1f}% {food_name[i]:<15}"
@@ -56,8 +53,6 @@ def main():
         if key == ord("w"):
             os.makedirs("../screenshots/", exist_ok=True)
             cv2.imwrite("../screenshots/image.png", frame)
-        if key == ord("f"):
-            bg_flag = not bg_flag
 
 
 if __name__ == '__main__':

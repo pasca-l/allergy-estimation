@@ -80,7 +80,7 @@ class FoodDataset(Dataset):
 
         class_name = img_name.split('/')[0]
         class_num = self.class_list.index(class_name)
-        # onehot_label = np.identity(101)[class_num]
+        onehot_label = np.identity(101)[class_num]
 
         return transformed_img, class_num
 

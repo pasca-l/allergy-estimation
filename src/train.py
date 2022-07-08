@@ -1,6 +1,5 @@
 import pytorch_lightning as pl
 
-from models import AllergyClassifierModel
 from system import AllergyClassifier
 from datasets import FoodDataModule
 
@@ -16,8 +15,7 @@ def main():
         class_file=class_file_path,
         batch_size=8
     )
-    model = AllergyClassifierModel()
-    classifier = AllergyClassifier(model)
+    classifier = AllergyClassifier()
 
     logger = pl.loggers.TensorBoardLogger(
         save_dir='../logs/'
