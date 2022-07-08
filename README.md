@@ -25,8 +25,6 @@ ckpt_file_path = './path/to/ckpt/file'
 ```
 
 ## Note
-:::note warn
 This application uses image classification to find the food class probability of an input image first. Allergen probability is not incorporated in the model (due to no loss improvement in experiments), so the network output is simply dot multiplied with the food-class-to-allergen weight matrix.
 
 In addition, the food-class-to-allergen weight matrix is derived from research impressions on the percentage of a ingredients used for the arrangement of a food class.
-:::
