@@ -1,6 +1,9 @@
 # Allergy Estimation
 This product aims to find the containing probability of 27 allergens of a food.
 
+## Screenshots
+![Product image](https://user-images.githubusercontent.com/70369563/198619355-32197323-71eb-4007-9f6d-14db7e14a8d6.png)
+
 ## Requirements
 - pytorch 1.12.0
 - pytorch-lightning 1.6.4
